@@ -14,10 +14,10 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_subnet" "public_subnets" {
-  count = length(var.public_subnet_cidrs)
-  vpc_id = aws_vpc.main.id
-  cidr_block = element(var.public_subnet_cidrs, count.index)
-  availability_zone = element(data.aws_availability_zones.available.names, count.index % length(data.aws_availability_zones.available.names))
+  count                   = length(var.public_subnet_cidrs)
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = element(var.public_subnet_cidrs, count.index)
+  availability_zone       = element(data.aws_availability_zones.available.names, count.index % length(data.aws_availability_zones.available.names))
   map_public_ip_on_launch = true
   tags = {
     Name = "${var.vpc_name}-public-subnet-${count.index + 1}"
@@ -25,9 +25,9 @@ resource "aws_subnet" "public_subnets" {
 }
 
 resource "aws_subnet" "private_subnets" {
-  count = length(var.private_subnet_cidrs)
-  vpc_id = aws_vpc.main.id
-  cidr_block = element(var.private_subnet_cidrs, count.index)
+  count             = length(var.private_subnet_cidrs)
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = element(var.private_subnet_cidrs, count.index)
   availability_zone = element(data.aws_availability_zones.available.names, count.index % length(data.aws_availability_zones.available.names))
   tags = {
     Name = "${var.vpc_name}-private-subnet-${count.index + 1}"
@@ -46,9 +46,9 @@ resource "aws_eip" "nat_eips" {
 }
 
 resource "aws_nat_gateway" "nat" {
-  count = length(aws_subnet.public_subnets)
+  count         = length(aws_subnet.public_subnets)
   allocation_id = element(aws_eip.nat_eips.*.id, count.index)
-  subnet_id = element(aws_subnet.public_subnets.*.id, count.index)
+  subnet_id     = element(aws_subnet.public_subnets.*.id, count.index)
   tags = {
     Name = "${var.vpc_name}-ngw"
   }
@@ -67,9 +67,9 @@ resource "aws_route_table" "public_rt" {
 
 resource "aws_route_table" "private_rt" {
   vpc_id = aws_vpc.main.id
-  count = length(aws_nat_gateway.nat)
+  count  = length(aws_nat_gateway.nat)
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = element(aws_nat_gateway.nat.*.id, count.index)
   }
   tags = {
@@ -78,14 +78,14 @@ resource "aws_route_table" "private_rt" {
 }
 
 resource "aws_route_table_association" "public_subnet_asso" {
-  count = length(var.public_subnet_cidrs)
-  subnet_id = element(aws_subnet.public_subnets[*].id, count.index)
+  count          = length(var.public_subnet_cidrs)
+  subnet_id      = element(aws_subnet.public_subnets[*].id, count.index)
   route_table_id = aws_route_table.public_rt.id
 }
 
 resource "aws_route_table_association" "private_subnet_asso" {
-  count = length(var.private_subnet_cidrs)
-  subnet_id = element(aws_subnet.private_subnets[*].id, count.index)
+  count          = length(var.private_subnet_cidrs)
+  subnet_id      = element(aws_subnet.private_subnets[*].id, count.index)
   route_table_id = aws_route_table.private_rt[count.index].id
 }
 

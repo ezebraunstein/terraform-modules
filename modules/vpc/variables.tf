@@ -1,6 +1,6 @@
 variable "AWS_REGION" {
   description = "AWS region to deploy resources"
-  type = string
+  type        = string
 }
 
 variable "vpc_name" {
@@ -10,15 +10,15 @@ variable "vpc_name" {
 
 variable "vpc_cidr" {
   description = "CIDR block for the VPC"
-  type = string
+  type        = string
 }
 
 variable "public_subnet_cidrs" {
   description = "List of public subnet CIDRs"
-  type = list(string)
+  type        = list(string)
 }
 
 variable "private_subnet_cidrs" {
   description = "List of private subnet CIDRs"
-  type = list(string)
+  type        = list(string)
 }
