@@ -8,6 +8,11 @@ variable "AWS_PROFILE" {
   type = string
 }
 
+variable "vpc_name" {
+  description = "The name of the VPC and a base name for related resources"
+  type        = string
+}
+
 variable "vpc_cidr" {
   description = "CIDR block for the VPC"
   type = string
