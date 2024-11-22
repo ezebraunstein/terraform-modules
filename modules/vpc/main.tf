@@ -50,7 +50,7 @@ resource "aws_nat_gateway" "nat" {
   allocation_id = element(aws_eip.nat_eips.*.id, count.index)
   subnet_id     = element(aws_subnet.public_subnets.*.id, count.index)
   tags = {
-    Name = "${var.vpc_name}-ngw"
+    Name = "${var.vpc_name}-ngw-${count.index + 1}"
   }
 }
 
@@ -73,7 +73,7 @@ resource "aws_route_table" "private_rt" {
     nat_gateway_id = element(aws_nat_gateway.nat.*.id, count.index)
   }
   tags = {
-    Name = "${var.vpc_name}-private-rt"
+    Name = "${var.vpc_name}-private-rt-${count.index + 1}"
   }
 }
 
