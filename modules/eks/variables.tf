@@ -18,6 +18,11 @@ variable "node_role_arn" {
   type        = string
 }
 
+variable "cluster_role_arn" {
+  description = "ARN of the IAM role for EKS cluster"
+  type        = string
+}
+
 variable "desired_size" {
   description = "Desired size of the EKS node group"
   type        = number
