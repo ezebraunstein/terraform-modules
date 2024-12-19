@@ -2,9 +2,9 @@ resource "aws_s3_bucket" "backend" {
   bucket = var.bucket_name
   tags = var.tags
 
-  lifecycle {
-    prevent_destroy = true
-  }
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
 }
 
 resource "aws_s3_bucket_versioning" "versioning_backend" {
